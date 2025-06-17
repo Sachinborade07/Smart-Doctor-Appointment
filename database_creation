@@ -1,0 +1,45 @@
+CREATE TABLE users (
+    id SERIAL PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    password TEXT NOT NULL, -- hashed password
+    role VARCHAR(10) CHECK (role IN ('doctor', 'patient')) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE doctor_availability_slots (
+    id SERIAL PRIMARY KEY,
+    doctor_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    slot_date DATE NOT NULL,
+    start_time TIME NOT NULL,
+    end_time TIME NOT NULL,
+    is_booked BOOLEAN DEFAULT FALSE
+);
+
+
+CREATE TABLE appointments (
+    id SERIAL PRIMARY KEY,
+    doctor_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    patient_id INTEGER REFERENCES users(id) ON DELETE CASCADE,
+    slot_id INTEGER REFERENCES doctor_availability_slots(id) ON DELETE CASCADE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    confirmation_email_sent BOOLEAN DEFAULT FALSE
+);
+
+
+-- Insert Doctor
+INSERT INTO users (name, email, password, role)
+VALUES 
+('Dr. Sachin', 'justcool183@gmail.com', 'doctor1', 'doctor');
+
+-- Insert Patients
+INSERT INTO users (name, email, password, role)
+VALUES
+('Patient One', 'sachinborade195@gmail.com', 'patient1', 'patient'),
+('Patient Two', 'sachinborade17000@gmail.com', 'patient2', 'patient');
+
+SELECT * FROM doctor_availability_slots
+
+
+SELECT * FROM users;
